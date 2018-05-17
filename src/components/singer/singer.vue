@@ -1,5 +1,7 @@
 <template>
-    <div></div>
+    <div>
+        singer
+    </div>
 </template>
 <script>
     export default{

@@ -1,14 +1,30 @@
 <template>
     <div class="recommend">
         <scroll class='recommend-content'
-            :data='descList'
+            :data='discList'
         >
-            <div></div>
+            <div>
+                <!-- 轮播图组件 -->
+                <slider>
+                    <!-- 插槽 -->
+                    <div>
+                        <a href="">
+                            <img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/278347.jpg">
+                        </a>
+                    </div>
+                     <div>
+                        <a href="">
+                            <img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/278347.jpg">
+                        </a>
+                    </div>
+                </slider>
+            </div>
         </scroll> 
     </div>
 </template>
 <script>
     import Scroll from 'base/scroll/scroll'
+    import Slider from 'base/slider/slider'
     export default{
         name:'recommend',
         data(){
@@ -17,10 +33,12 @@
             }
         },
         components:{
-            Scroll
+            Scroll,
+            Slider
         }
     }
 </script>
+
 <style scoped lang='less'>
     @import '~common/less/variable.less';
     .recommend{
@@ -28,5 +46,6 @@
         top:88px;
         bottom:0;
         width:100%;
+
     }
 </style>

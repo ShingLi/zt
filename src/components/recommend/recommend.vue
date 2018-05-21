@@ -14,7 +14,7 @@
                     </div>
                      <div>
                         <a href="">
-                            <img src="http://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/278347.jpg">
+                            <img src="https://y.gtimg.cn/music/common/upload/MUSIC_FOCUS/279936.jpg?max_age=2592000">
                         </a>
                     </div>
                 </slider>

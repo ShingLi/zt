@@ -1,6 +1,6 @@
 <template>
     <div class="slider" ref='slider'>
-        <div class="slider-group" ref= 'sliderGroup'>
+        <div class="slider-group" ref='sliderGroup'>
             <slot></slot>
         </div>
         <div class="dots">
@@ -39,27 +39,41 @@
         },
         mounted(){
             setTimeout(()=>{
-                this._setSliderWidth()
-                this._initdots()
-                this._initSlider()
-            },25)
+                this._setSliderWidth() //初始化设置宽度
+                this._initdots() //初始话设置小圆点的个数 
+                this._initSlider()//初始化slider
+
+                if(this.autoPlay){
+                    this._autoPlay()
+                }
+            },20)
+            window.addEventListener('resize',()=>{
+                if(!this.slider){
+                    return 
+                }
+                this._setSliderWidth(true)
+                this.slider.refresh()
+            })
         },
         methods:{
             _setSliderWidth(isResize){
-                this.children = this.$refs.sliderGroup.children 
+                this.children = this.$refs.sliderGroup.children  //获得类数组对象
+               
                 let width = 0,
-                    sliderWidth = this.$refs.slider.clientWidth;
+                    sliderWidth = this.$refs.slider.clientWidth; //获得最外层容器的宽度
+                    
                 for(let i=0; i<this.children.length;i++){
-                    let child = this.children[i]
-                    addClass(child,'slider-item')
-                    child.style.width = sliderWidth+'px'
-                    width +=sliderWidth;
+                    let child = this.children[i] //当前的每一个子元素
+                    addClass(child,'slider-item')//动态的添加class 样式
+
+                    child.style.width = sliderWidth+'px' //每一个子元素设置宽度
+                    width +=sliderWidth; //获得总宽度
                 }
                 if(this.loop&&!isResize){
                     width+= 2*sliderWidth
 
                 }
-                this.$refs.sliderGroup.style.width = width+'px'
+                this.$refs.sliderGroup.style.width = width+'px' //赋值给最slider
             },
             _initdots(){
                 this.dots =new Array(this.children.length)
@@ -67,17 +81,19 @@
             _initSlider(){
                 this.slider = new BScroll(this.$refs.slider,{
                     scrollX:true,
+                    scrollY:false,
                     snap:{
-                        loop:this.loop
+                        loop:this.loop,
+                        threshold:0.3
                     }
 
                 })
                 this.slider.on('scrollEnd',()=>{
+
                     let pageIndex = this.slider.getCurrentPage().pageX;
-                    if (this.loop) {
-                        pageIndex -= 1
-                    }
+                    
                     this.currentIndex = pageIndex
+
                     if(this.autoPlay){
                         this._autoPlay()
                     }
@@ -90,10 +106,11 @@
                 })
             },
             _autoPlay(){
-                let pageIndex = this.currentIndex +1
+                let pageIndex = this.currentIndex + 1
                 if(this.loop){
-                    pageIndex+=1
+                    pageIndex +=1
                 }
+
                 this.timer = setTimeout(()=>{
                     this.slider.goToPage(pageIndex, 0, 400)
                 },this.interval) 

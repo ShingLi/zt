@@ -91,10 +91,13 @@
                 this.slider.on('scrollEnd',()=>{
 
                     let pageIndex = this.slider.getCurrentPage().pageX;
-                    
+                    // if(this.loop){
+                    //     pageIndex -=1;
+                    // }
                     this.currentIndex = pageIndex
 
                     if(this.autoPlay){
+                        clearTimeout(this.timer)
                         this._autoPlay()
                     }
                 })
@@ -107,12 +110,13 @@
             },
             _autoPlay(){
                 let pageIndex = this.currentIndex + 1
-                if(this.loop){
-                    pageIndex +=1
-                }
+                // if(this.loop){
+                //     pageIndex +=1
+                // }
 
                 this.timer = setTimeout(()=>{
                     this.slider.goToPage(pageIndex, 0, 400)
+
                 },this.interval) 
             }
         }

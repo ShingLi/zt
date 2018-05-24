@@ -2,6 +2,7 @@
     <div class="recommend">
         <scroll class='recommend-content'
             :data='discList'
+            ref='scroll'
         >
             <div>
                 <!-- 轮播图组件 -->
@@ -10,7 +11,7 @@
                         <!-- 插槽 -->
                         <div v-for='item in recommends'>
                             <a :href="item.linkUrl">
-                                <img :src="item.picUrl">
+                                <img :src="item.picUrl" @load='loadImage'>
                             </a>
                         </div>
                     </slider>
@@ -37,7 +38,7 @@
 <script>
     import Scroll from 'base/scroll/scroll'
     import Slider from 'base/slider/slider'
-    import { getRecommend } from 'api/recommend'
+    import { getRecommend ,getDiscList } from 'api/recommend'
     export default{
         name:'recommend',
         data(){
@@ -47,7 +48,9 @@
             }
         },
         created(){
-             this._getRecommend()
+            this._getRecommend()
+            this._getDiscList()
+
         },
         mounted(){
            
@@ -63,6 +66,17 @@
                 }).catch(err=>{
                     console.log(err)
                 })
+            },
+            _getDiscList(){
+                getDiscList().then(res=>{
+                    console.log(res)
+                })
+            },
+            loadImage(){
+                if(!this.checkloaded){
+                    this.checkloaded = true
+                    this.$refs.scroll.refresh()
+                }
             }
         }
     }

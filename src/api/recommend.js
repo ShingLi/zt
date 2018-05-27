@@ -25,11 +25,9 @@ export function getDiscList(){
             rnd: Math.random(),
             format: 'json'
         })
-    return axios.get(url,{
-        headers: {
-        referer: 'https://c.y.qq.com/',
-        host: 'c.y.qq.com'
-        },
+    return axios({
+    	methods:'get',
+    	url:url,
         params: data
         
     }).then(res=>{

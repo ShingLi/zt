@@ -5,7 +5,8 @@
         </div>
         <div class="dots">
             <span class="dot"
-                v-for='item,index in dots'
+                v-for='(item,index) in dots'
+                :key='index'
                 :class ="{active:index===currentIndex}"
             ></span>
         </div>

@@ -1,9 +1,13 @@
 <template>
 	<scroll class="listview"
 		:data = 'data'
+        ref="scroll"
 	>
 		<ul>
-			<li class="list-group" v-for='group in data'>
+			<li class="list-group" 
+                v-for='group in data'
+                ref = "group"
+            >
 				<h2 class="list-group-title" v-text='group.title'></h2>
 				<ul>
 					<li class="list-group-item" v-for='item in group.items'>
@@ -17,7 +21,8 @@
 		<div class="list-shortcut" @touchstart='onShortcutTouchStart($event)'>
 			<ul>
 				<li class="item"
-					v-for='item,index of shortcutList'
+					v-for='(item,index) of shortcutList'
+                    :key='index'
 					:class='{current:currentIndex===index}'
 					:data-index= "index"
 				>
@@ -47,6 +52,7 @@
 		},
 		computed:{
 			shortcutList(){
+                // title 的数组
 				return this.data.map((item)=>{
 					return item.title.substr(0,1)
 				})
@@ -57,10 +63,10 @@
 		},
 		methods:{
 			onShortcutTouchStart(e){
-				console.log(e)
-				let anchorIndex = getData(e.target,'index')
-				// console.log(anchorIndex)
-
+               
+                let index = getData(e.target,'index')
+                console.log(index)
+                this.$refs.scroll.scrollToElement(this.$refs.group[index],0)
 			}
 		}
 	}

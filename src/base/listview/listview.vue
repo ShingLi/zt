@@ -1,8 +1,8 @@
 <template>
 	<scroll class="listview"
 		:data = 'data'
-        :listenScroll = this.listenScroll
-        :probeType = this.probeType
+        :listenScroll = listenScroll
+        :probeType = probeType
         ref="scroll"
         @scroll = "scroll"
 	>
@@ -102,24 +102,38 @@
             },
             _calculateHeight(){
                 this.listHeight =[]
-                let height = 0;
+                let height = 0
                 const list = this.$refs.group
                 this.listHeight.push(height)
-                for(let i =0;i<list.length;i++){
-                    let item= list[i]
-                    console.log(item)
+
+                for(let i=0;i<list.length;i++){
+                    let item = list[i]
+                    height+= item.clientHeight
+                    this.listHeight.push(height)
                 }
             }
 
         },
         watch:{
             data(){
-                setTimeout(()=>{
-                    this._calculateHeight()
-                },20)
+               setTimeout(()=>{
+                   this._calculateHeight()
+               })
             },
-            scrollY(newVal){
-
+            scrollY(newY){
+                let listHeight = this.listHeight
+                if(newY>0){
+                    this.currentIndex = 0
+                    return 
+                }
+                for(let i=0;i<listHeight.length;i++){
+                    let [height1,height2] = [listHeight[i],listHeight[i+1]]
+                    if(-newY>height1&&-newY<height2){
+                        this.currentIndex = i
+                        return 
+                    }
+                }
+                this.currentIndex = listHeight.length-2
             }
         }
 	}

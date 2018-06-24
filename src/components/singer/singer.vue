@@ -86,7 +86,7 @@
 <style scoped lang='less'>
 	.singer{
 		position: fixed;
-		top:80px;
+		top:88px;
 		bottom: 0;
 		width: 100%;
 	}

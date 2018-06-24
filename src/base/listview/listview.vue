@@ -34,20 +34,28 @@
 				>
 					{{item}}
 				</li>
-				
 			</ul>
+		</div>
+		<!-- 顶部的固定 -->
+		<div class="list-fixed"
+			v-show='fixedTitle'
+			ref='fixedTitle'
+		>
+			<h1 class="fixed-title">{{fixedTitle}}</h1>
 		</div>
 	</scroll>
 </template>
 <script>
 	import Scroll from 'base/scroll/scroll'
 	import { getData } from 'common/js/dom'
-    const ANCHOR_HEIGHT = 18
+    const ANCHOR_HEIGHT = 18,
+    		TITLE_HEIGHT=30;
 	export default{
 		data(){
 			return {
                 currentIndex:0,
                 scrollY:-1,//默认滚动的距离
+                diff:0,//默认的偏移量
 			}
 		},
 		props:{
@@ -70,6 +78,13 @@
 				return this.data.map((item)=>{
 					return item.title.substr(0,1)
 				})
+			},
+			// 列表顶部固定的标题
+			fixedTitle(){
+				if(this.scrollY>0){
+					return ''
+				}
+				return this.data[this.currentIndex]?this.data[this.currentIndex].title:''
 			}
 		},
 		components:{
@@ -79,6 +94,7 @@
 			onShortcutTouchStart(e){
                 let index = getData(e.target,'index')
                 this._scroll(index)
+
                 // 滑动
                 let firstTouch = e.touches[0]
                 this.touch.y1 = firstTouch.pageY
@@ -94,6 +110,17 @@
             },
             _scroll(index){
                 // console.log(this.$refs.group)
+                console.log(index)
+                if(!index&&index!==0){
+                	// 防止点击在首位丢失Index
+                	return 
+                }
+                if(index<0){
+                	index = 0
+                }else if(index>this.listHeight.length-2){
+                	index = this.listHeight.length-2
+                }
+                this.scrollY = -this.listHeight[index]
                 this.$refs.scroll.scrollToElement(this.$refs.group[index],0)
             },
             scroll(pos){
@@ -111,6 +138,7 @@
                     height+= item.clientHeight
                     this.listHeight.push(height)
                 }
+                console.log(this.listHeight)
             }
 
         },
@@ -126,14 +154,21 @@
                     this.currentIndex = 0
                     return 
                 }
-                for(let i=0;i<listHeight.length;i++){
+
+                for(let i = 0; i< listHeight.length - 1;i++){
                     let [height1,height2] = [listHeight[i],listHeight[i+1]]
-                    if(-newY>height1&&-newY<height2){
+                    if(-newY>=height1&&-newY<height2){
                         this.currentIndex = i
+                        this.diff  = height2 + newY
                         return 
                     }
                 }
                 this.currentIndex = listHeight.length-2
+            },
+            diff(newY){
+            	if(newY>0&&newY<TITLE_HEIGHT){
+            		// this.$refs.fixedTitle.style.transform = 
+            	}
             }
         }
 	}
@@ -147,7 +182,7 @@
 		overflow: hidden;
 		background: @color-background;
 		.list-group{
-			padding-top: 30px;
+			padding-bottom: 30px;
 			.list-group-title{
 				height: 30px;
 				line-height: 30px;
@@ -191,6 +226,20 @@
 				&.current{
 					color:@color-theme;
 				}
+			}
+		}
+		.list-fixed{
+			position: absolute;
+			top:0;
+			left: 0;
+			width: 100%;
+			.fixed-title{
+				height:30px;
+				line-height: 30px;
+				padding-left: 20px;
+				font-size: @font-size-small;
+        		color: @color-text-l;
+        		background: @color-highlight-background
 			}
 		}
 	}

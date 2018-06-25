@@ -13,7 +13,10 @@
             >
 				<h2 class="list-group-title" v-text='group.title'></h2>
 				<ul>
-					<li class="list-group-item" v-for='item in group.items'>
+					<li class="list-group-item" 
+						v-for='item in group.items'
+						@click='selectSinger(item)'
+					>
 						<img :src="item.avatar" alt="" class="avatar">
 						<span class="name" v-text='item.name'></span>
 					</li>
@@ -139,7 +142,10 @@
                     this.listHeight.push(height)
                 }
                 console.log(this.listHeight)
-            }
+            },
+             selectSinger(singer){
+        		this.$emit("select",singer)
+        	},
 
         },
         watch:{
@@ -166,9 +172,13 @@
                 this.currentIndex = listHeight.length-2
             },
             diff(newY){
-            	if(newY>0&&newY<TITLE_HEIGHT){
-            		// this.$refs.fixedTitle.style.transform = 
-            	}
+            	let fixedTop = (newY>0&&newY<TITLE_HEIGHT)?newY - TITLE_HEIGHT:0
+            	if (this.fixedTop === fixedTop) {
+          			return
+        		}
+        		console.log(fixedTop)
+            	this.fixedTop = fixedTop //减少操作DOM的次数
+            	this.$refs.fixedTitle.style.transform = `translate3d(0,${fixedTop}px,0)`
             }
         }
 	}

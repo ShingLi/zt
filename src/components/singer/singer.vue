@@ -1,6 +1,7 @@
 <template>
     <div class="singer">
-        <list-view :data='singers'></list-view>
+        <list-view :data='singers' @select='selectSinger'></list-view>
+        <router-view></router-view>
     </div>
 </template>
 <script>
@@ -79,7 +80,10 @@
         		})
         		console.log(hot)
         		return hot.concat(ret)
-        	}
+        	},
+            selectSinger(singer){
+                this.$router.push(`/singer/${singer.id}`)
+            }
         }
     }
 </script>

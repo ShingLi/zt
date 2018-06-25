@@ -15,8 +15,14 @@ const routes =[
         },
         {
             path:'/singer',
-            name:'singer',
-            component: resolve=>require(['components/singer/singer'],resolve)
+            // name:'singer',
+            component: resolve=>require(['components/singer/singer'],resolve),
+            children:[
+                {
+                    path:':id',
+                    component:resolve=>require(['components/singer-detail/singer-detail'],resolve),
+                }
+            ]
         },
         {
             path:'/rank',

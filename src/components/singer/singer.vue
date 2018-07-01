@@ -6,7 +6,10 @@
 </template>
 <script>
 	import ListView from 'base/listview/listview'
-	import { getSingerList } from 'api/singer'
+    import { getSingerList } from 'api/singer'
+    
+    import { mapMutations} from 'vuex'
+
 	import { ERR_OK } from 'api/config'
 	import Singer from 'common/js/Singer'
 
@@ -83,7 +86,12 @@
         	},
             selectSinger(singer){
                 this.$router.push(`/singer/${singer.id}`)
-            }
+                // 映射
+                this.setSinger(singer)
+            },
+            ...mapMutations({
+                setSinger:'SET_SINGER'
+            })
         }
     }
 </script>

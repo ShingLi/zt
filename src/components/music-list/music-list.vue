@@ -4,23 +4,28 @@
 			<i class="icon-back"></i>
 		</div>
 		<h1 class="title" v-text='title'></h1>
-		<div class="bg-image" :style='bgStyle'>
+		<div class="bg-image" :style='bgStyle' ref='bgImage'>
 			<div class="play-wrapper">
 				<div class="play">
 					<i class="icon-play"></i>
 					<span class="text">随机播放全部</span>
 				</div>
 			</div>
+			<div class="filter"></div>
 		</div>
-		<scroll :data='songs' class='list'>
-			<div class="song-list-wrapper">
 
+		<scroll :data='songs' class='list' ref='list' @scroll='scroll'
+			:listenScroll='listenScroll' :probeType='probeType'
+		>
+			<div class="song-list-wrapper">
+				<song-list :songs='songs'></song-list>
 			</div>
 		</scroll>
 	</div>
 </template>
 <script>
 	import scroll from 'base/scroll/scroll'
+	import SongList from 'base/song-list/song-list'
 	export default {
 		name:'music-list',
 		props:{
@@ -37,13 +42,32 @@
 				default:[]
 			}
 		},
+		data(){
+			return {
+				scrollY:-1
+			}
+		},
+		created(){
+			this.probeType = 3
+			this.listenScroll = true
+		},
+		mounted(){
+			this.$refs.list.$el.style.top = this.$refs.bgImage.clientHeight +'px'
+		},
+		methods:{
+			scroll(pos){
+				
+				this.scrollY = pos.y
+			}
+		},
 		computed:{
 			bgStyle(){
 				return `background-image:url(${this.bgImage})`
 			}
 		},
 		components:{
-			scroll
+			scroll,
+			SongList
 		}
 	}
 </script>

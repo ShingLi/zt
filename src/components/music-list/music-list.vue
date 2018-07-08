@@ -1,19 +1,20 @@
 <template>
 	<div class="music-list">
-		<div class="back">
+		<div class="back" @click='$router.go(-1)'>
 			<i class="icon-back"></i>
 		</div>
 		<h1 class="title" v-text='title'></h1>
 		<div class="bg-image" :style='bgStyle' ref='bgImage'>
 			<div class="play-wrapper">
-				<div class="play">
+				<div class="play" ref="playBtn">
 					<i class="icon-play"></i>
 					<span class="text">随机播放全部</span>
 				</div>
 			</div>
 			<div class="filter"></div>
 		</div>
-
+		<!-- mask -->
+		<div class="bg-layer" ref='layer'></div>
 		<scroll :data='songs' class='list' ref='list' @scroll='scroll'
 			:listenScroll='listenScroll' :probeType='probeType'
 		>
@@ -26,6 +27,7 @@
 <script>
 	import scroll from 'base/scroll/scroll'
 	import SongList from 'base/song-list/song-list'
+	const RESERVED_HEIGHT = 40
 	export default {
 		name:'music-list',
 		props:{
@@ -52,11 +54,14 @@
 			this.listenScroll = true
 		},
 		mounted(){
-			this.$refs.list.$el.style.top = this.$refs.bgImage.clientHeight +'px'
+			this.bgImageHeight = this.$refs.bgImage.clientHeight
+
+			this.minTranslateY = -this.bgImageHeight + RESERVED_HEIGHT
+
+			this.$refs.list.$el.style.top = this.bgImageHeight +'px'
 		},
 		methods:{
 			scroll(pos){
-				
 				this.scrollY = pos.y
 			}
 		},
@@ -68,6 +73,27 @@
 		components:{
 			scroll,
 			SongList
+		},
+		watch:{
+			scrollY(newY){
+				// Math.max 返回一组数中最大的值
+				// 
+				let translateY = Math.max(this.minTranslateY,newY)
+				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
+				// 解z-index 层级问题
+				let zindex = 0
+				if(newY<this.minTranslateY){
+					this.$refs.bgImage.style.paddingTop = 0;
+					this.$refs.bgImage.style.height = RESERVED_HEIGHT +'px'
+					this.$refs.playBtn.style.display = 'none'
+					zindex = 10
+				}else{
+					this.$refs.bgImage.style.paddingTop = '70%'
+					this.$refs.bgImage.style.height = 0
+					zindex = 0
+				}
+				this.$refs.bgImage.style.zIndex = zindex
+			}
 		}
 	}
 </script>
@@ -114,7 +140,7 @@
 			.play-wrapper{
 				position: absolute;
 				bottom: 20px;
-				z-index: 50;
+				/*z-index: 50;*/
 				width: 100%;
           		.play{
           			box-sizing: border-box;
@@ -139,6 +165,11 @@
           			}
           		}
 			}
+		}
+		.bg-layer{
+			position: relative;
+      		height: 100%;
+      		background: @color-background
 		}
 		.list{
 			position: fixed;

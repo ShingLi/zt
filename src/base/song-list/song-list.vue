@@ -25,6 +25,7 @@
 </script>
 <style lang='less' scoped>
 	@import '~common/less/variable';
+	@import '~common/less/mixin';
 	.song-list{
 		.item{
 			display: flex;
@@ -38,11 +39,13 @@
 				line-height: 20px;
 				overflow: hidden;
 				.name{
-					color: @color-text
+					color: @color-text;
+					.no-wrap();
 				}
 				.desc{
 					margin-top: 4px;
-					color: @color-text-d
+					color: @color-text-d;
+					.no-wrap();
 				}
 			}
 		}

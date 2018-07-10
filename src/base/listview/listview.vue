@@ -172,6 +172,11 @@
                 this.currentIndex = listHeight.length-2
             },
             diff(newY){
+            	// 偏移量
+            	// 思路是先计算出每一个区间的高度 放到一个数组里面 然后
+            	// 高度和scrollY进行计算 得出一个变化的区间值
+            	// diff
+            	// watch之歌diff值，这里- 是因为transform 上移动是复制
             	let fixedTop = (newY>0&&newY<TITLE_HEIGHT)?newY - TITLE_HEIGHT:0
             	if (this.fixedTop === fixedTop) {
           			return

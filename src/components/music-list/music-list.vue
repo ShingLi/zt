@@ -54,8 +54,10 @@
 			this.listenScroll = true
 		},
 		mounted(){
+			// 图片的高度
 			this.bgImageHeight = this.$refs.bgImage.clientHeight
-
+			//  最小偏移量
+			//  
 			this.minTranslateY = -this.bgImageHeight + RESERVED_HEIGHT
 
 			this.$refs.list.$el.style.top = this.bgImageHeight +'px'
@@ -81,7 +83,13 @@
 				let translateY = Math.max(this.minTranslateY,newY)
 				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
 				// 解z-index 层级问题
+				let scale =1
+				let percent = Math.abs( newY/this.bgImageHeight)
 				let zindex = 0
+				if(newY>0){
+					scale = 1+ percent
+					zindex =10
+				}
 				if(newY<this.minTranslateY){
 					this.$refs.bgImage.style.paddingTop = 0;
 					this.$refs.bgImage.style.height = RESERVED_HEIGHT +'px'
@@ -90,8 +98,10 @@
 				}else{
 					this.$refs.bgImage.style.paddingTop = '70%'
 					this.$refs.bgImage.style.height = 0
+					this.$refs.playBtn.style.display = 'block'
 					zindex = 0
 				}
+				this.$refs.bgImage.style['transform'] = `scale(${scale})`
 				this.$refs.bgImage.style.zIndex = zindex
 			}
 		}
@@ -136,6 +146,7 @@
 			width: 100%;
 			height: 0;
 			padding-top: 70%;
+			transform-origin: top;
 			background-size: cover;
 			.play-wrapper{
 				position: absolute;

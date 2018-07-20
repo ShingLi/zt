@@ -27,7 +27,10 @@
 <script>
 	import scroll from 'base/scroll/scroll'
 	import SongList from 'base/song-list/song-list'
+	import { prefixStyle } from 'common/js/dom'
+
 	const RESERVED_HEIGHT = 40
+	const transform = prefixStyle('transform')
 	export default {
 		name:'music-list',
 		props:{
@@ -81,7 +84,7 @@
 				// Math.max 返回一组数中最大的值
 				// 
 				let translateY = Math.max(this.minTranslateY,newY)
-				this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
+				this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
 				// 解z-index 层级问题
 				let scale =1
 				let percent = Math.abs( newY/this.bgImageHeight)
@@ -101,7 +104,7 @@
 					this.$refs.playBtn.style.display = 'block'
 					zindex = 0
 				}
-				this.$refs.bgImage.style['transform'] = `scale(${scale})`
+				this.$refs.bgImage.style[transform] = `scale(${scale})`
 				this.$refs.bgImage.style.zIndex = zindex
 			}
 		}

@@ -1,6 +1,6 @@
 <template>
 	<ul class="song-list">
-		<li class="item" v-for='(song ,index) of songs'>
+		<li class="item" v-for='(song ,index) of songs' :key='index'>
 			<div class="content">
 				<h2 class="name">{{song.name}}</h2>
 				<p class="desc">{{getDesc(song)}}</p>

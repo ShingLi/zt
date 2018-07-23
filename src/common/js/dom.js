@@ -37,7 +37,7 @@ let vendor = (()=> {
     }
 
     for (let key in transformNames) {
-        if (elementStyle[transformNames[key]] !== undefind) {
+        if (elementStyle[transformNames[key]] !== 'undefind') {
             return key
         }
 
@@ -46,13 +46,13 @@ let vendor = (()=> {
 })()
 
 export function prefixStyle(style) {
-    if (vandor == false) {
+    if (vendor == false) {
         return false 
     }
-    if (vandor =='standard') {
+    if (vendor =='standard') {
         return style
     }
-    return vandor + style.charAt(0).toUpperCase() + style.substr(1)
+    return vendor + style.charAt(0).toUpperCase() + style.substr(1)
 }
 
 

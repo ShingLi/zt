@@ -1,6 +1,9 @@
 <template>
 	<scroll class="listview"
 		:data = data
+		:probeType =probeType
+		:listenScroll = listenScroll
+		@scroll = 'scroll'
 		ref='scroll'
 	>
 		<ul>
@@ -29,7 +32,7 @@
 				<li class="item" 
 					:data-index='index'
 					v-for='(item,index) of shortcutlist'
-					:class='{current:currentIndex==index}'
+					:class="{current:currentIndex == index}"
 				>{{item}}</li>
 			</ul>
 		</div>
@@ -43,7 +46,8 @@
 	export default{
 		data(){
 			return {
-               currentIndex:0
+				currentIndex:0,
+				scrollY:-1
 			}
 		},
 		props:{
@@ -56,6 +60,9 @@
 		},
         created() {
             this.touch = {}
+            this.probeType = 3
+            this.listenScroll = true
+            this.listHeight
         },
 		computed: {
 			shortcutlist() {
@@ -68,20 +75,80 @@
 			Scroll
 		},
 		methods: {
-			onShortcutTouchStart(e){
+			onShortcutTouchStart(e) {
 				// console.log(e)
+				let anchorIndex = getData(e.target,'index')
 				this.touch.y1 = e.touches[0].pageY
-				this.currentIndex = getData(e.target,'index')
-				this.$refs.scroll.scrollToElement(this.$refs.group[this.currentIndex])
+				this.touch.anchorIndex = anchorIndex
+				this._scrollTo(anchorIndex)
 			},
 			onShortcutTouchStartMove(e) {
 				this.touch.y2 = e.touches[0].pageY
-				let index = ~~(this.touch.y2-this.touch.y1)/ ANCHOR_HEIGHT
-				this.$refs.scroll.scrollToElement(this.$refs.group[index])
+
+				let delta = (this.touch.y2-this.touch.y1)/ ANCHOR_HEIGHT | 0
+				
+				let anchorIndex = parseInt(this.touch.anchorIndex) + delta
+				this._scrollTo(anchorIndex)
+
+			},
+			_scrollTo(index) {
+				// this.currentIndex = index
+				if (!index && index !== 0) {
+					return 
+				}
+				if (index<0) {
+					index = 0
+				}else if(index >this.listHeight.length-2){
+					index = this.listHeight.length-2
+
+				}
+				console.log(index,this.listHeight[index])
+				this.scrollY = - this.listHeight[index]
+				this.$refs.scroll.scrollToElement(this.$refs.group[index],0)
+			},
+			_calculateHeight() {
+				let listHeight = [],
+					Height = 0 ,
+					groupList = this.$refs.group ;
+				listHeight.push(Height)
+				for (let i =0;i<groupList.length;i++) {
+					let item = groupList[i]
+					Height += item.clientHeight
+					listHeight.push(Height)
+				}
+				console.log(listHeight)
+				this.listHeight = listHeight
+			},
+			scroll(pos) {
+				this.scrollY = pos.y
 
 			},
 			selectSinger(item) {
 
+			}
+		},
+		watch: {
+			data() {
+				setTimeout(()=>{
+					this._calculateHeight()
+				})	
+			},
+			scrollY(newY) {
+				let listHeight = this.listHeight
+				if (newY > 0) {
+					this.currentIndex = 0
+					return 
+				}
+
+				for (let i= 0 ;i<listHeight.length;i++) {
+
+					let height1 = listHeight[i]
+					let height2 =listHeight[i+1]
+					if (-newY>height1 && -newY<height2) {
+						this.currentIndex = i
+						return 
+					}
+				}
 			}
 		}
 	}

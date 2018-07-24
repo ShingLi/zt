@@ -1,10 +1,7 @@
 <template>
 	<scroll class="listview"
-		:data = 'data'
-        :listenScroll = listenScroll
-        :probeType = probeType
-        ref="scroll"
-        @scroll = "scroll"
+		:data = data
+		ref='scroll'
 	>
 		<ul>
 			<li class="list-group" 
@@ -23,169 +20,70 @@
 				</ul>
 			</li>
 		</ul>
-		<!-- 右侧的列表 -->
-		<div class="list-shortcut" 
-            @touchstart='onShortcutTouchStart($event)'
-            @touchmove.stop.prevent ='onshortcutTouchMove($event)'
-        >
+		<div 
+			class="list-shortcut" 
+				@touchstart.stop.prevent= 'onShortcutTouchStart($event)'
+				@touchmove.stop.prevent='onShortcutTouchStartMove($event)'
+			>
 			<ul>
-				<li class="item"
-					v-for='(item,index) of shortcutList'
-                    :key='index'
-					:class='{current:currentIndex===index}'
-					:data-index= "index"
-				>
-					{{item}}
-				</li>
+				<li class="item" 
+					:data-index='index'
+					v-for='(item,index) of shortcutlist'
+					:class='{current:currentIndex==index}'
+				>{{item}}</li>
 			</ul>
-		</div>
-		<!-- 顶部的固定 -->
-		<div class="list-fixed"
-			v-show='fixedTitle'
-			ref='fixedTitle'
-		>
-			<h1 class="fixed-title">{{fixedTitle}}</h1>
 		</div>
 	</scroll>
 </template>
 <script>
 	import Scroll from 'base/scroll/scroll'
 	import { getData } from 'common/js/dom'
-    const ANCHOR_HEIGHT = 18,
-    		TITLE_HEIGHT=30;
+	const ANCHOR_HEIGHT = 18
+    
 	export default{
 		data(){
 			return {
-                currentIndex:0,
-                scrollY:-1,//默认滚动的距离
-                diff:0,//默认的偏移量
+               currentIndex:0
 			}
 		},
 		props:{
-			data:{
+			data: {
 				type:Array|Object,
 				default:()=>{
 					return []
 				}
 			}
 		},
-        created(){
-            this.touch = {},
-            this.listenScroll = true
-            this.probeType = 3
-            this.listHeight = []
+        created() {
+            this.touch = {}
         },
-		computed:{
-			shortcutList(){
-                // title 的数组
-				return this.data.map((item)=>{
-					return item.title.substr(0,1)
+		computed: {
+			shortcutlist() {
+				return this.data.map(group=>{
+					return group.title.substr(0,1)
 				})
-			},
-			// 列表顶部固定的标题
-			fixedTitle(){
-				if(this.scrollY>0){
-					return ''
-				}
-				return this.data[this.currentIndex]?this.data[this.currentIndex].title:''
 			}
 		},
-		components:{
+		components: {
 			Scroll
 		},
-		methods:{
+		methods: {
 			onShortcutTouchStart(e){
-                let index = getData(e.target,'index')
-                this._scroll(index)
+				// console.log(e)
+				this.touch.y1 = e.touches[0].pageY
+				this.currentIndex = getData(e.target,'index')
+				this.$refs.scroll.scrollToElement(this.$refs.group[this.currentIndex])
+			},
+			onShortcutTouchStartMove(e) {
+				this.touch.y2 = e.touches[0].pageY
+				let index = ~~(this.touch.y2-this.touch.y1)/ ANCHOR_HEIGHT
+				this.$refs.scroll.scrollToElement(this.$refs.group[index])
 
-                // 滑动
-                let firstTouch = e.touches[0]
-                this.touch.y1 = firstTouch.pageY
-                this.touch.index = index
+			},
+			selectSinger(item) {
 
-            },
-            onshortcutTouchMove(e){
-                let firstTouch = e.touches[0]
-                this.touch.y2  = firstTouch.pageY
-                let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0 ,
-                    index = parseInt(this.touch.index) + delta ;
-                this._scroll(index)
-            },
-            _scroll(index){
-                // console.log(this.$refs.group)
-                console.log(index)
-                if(!index&&index!==0){
-                	// 防止点击在首位丢失Index
-                	return 
-                }
-                if(index<0){
-                	index = 0
-                }else if(index>this.listHeight.length-2){
-                	index = this.listHeight.length-2
-                }
-                this.scrollY = -this.listHeight[index]
-                this.$refs.scroll.scrollToElement(this.$refs.group[index],0)
-            },
-            scroll(pos){
-                this.scrollY = pos.y
-                
-            },
-            _calculateHeight(){
-                this.listHeight =[]
-                let height = 0
-                const list = this.$refs.group
-                this.listHeight.push(height)
-
-                for(let i=0;i<list.length;i++){
-                    let item = list[i]
-                    height+= item.clientHeight
-                    this.listHeight.push(height)
-                }
-                console.log(this.listHeight)
-            },
-             selectSinger(singer){
-        		this.$emit("select",singer)
-        	},
-
-        },
-        watch:{
-            data(){
-               setTimeout(()=>{
-                   this._calculateHeight()
-               })
-            },
-            scrollY(newY){
-                let listHeight = this.listHeight
-                if(newY>0){
-                    this.currentIndex = 0
-                    return 
-                }
-
-                for(let i = 0; i< listHeight.length - 1;i++){
-                    let [height1,height2] = [listHeight[i],listHeight[i+1]]
-                    if(-newY>=height1&&-newY<height2){
-                        this.currentIndex = i
-                        this.diff  = height2 + newY
-                        return 
-                    }
-                }
-                this.currentIndex = listHeight.length-2
-            },
-            diff(newY){
-            	// 偏移量
-            	// 思路是先计算出每一个区间的高度 放到一个数组里面 然后
-            	// 高度和scrollY进行计算 得出一个变化的区间值
-            	// diff
-            	// watch之歌diff值，这里- 是因为transform 上移动是复制
-            	let fixedTop = (newY>0&&newY<TITLE_HEIGHT)?newY - TITLE_HEIGHT:0
-            	if (this.fixedTop === fixedTop) {
-          			return
-        		}
-        		console.log(fixedTop)
-            	this.fixedTop = fixedTop //减少操作DOM的次数
-            	this.$refs.fixedTitle.style.transform = `translate3d(0,${fixedTop}px,0)`
-            }
-        }
+			}
+		}
 	}
 </script>
 <style scoped lang='less'>

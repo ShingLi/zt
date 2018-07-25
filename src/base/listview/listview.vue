@@ -1,9 +1,6 @@
 <template>
 	<scroll class="listview"
 		:data = data
-		:probeType =probeType
-		:listenScroll = listenScroll
-		@scroll = 'scroll'
 		ref='scroll'
 	>
 		<ul>
@@ -36,18 +33,22 @@
 				>{{item}}</li>
 			</ul>
 		</div>
+		<!--diff -->
+		<!-- <div class="list-fixed" ref='fixed' v-show='fixedTitle'>
+			<h1 class="fixed-title">{{fixedTitle}}</h1>
+		</div> -->
 	</scroll>
 </template>
 <script>
 	import Scroll from 'base/scroll/scroll'
 	import { getData } from 'common/js/dom'
 	const ANCHOR_HEIGHT = 18
+	const TITLE_HEIGHT = 30
     
 	export default{
 		data(){
 			return {
-				currentIndex:0,
-				scrollY:-1
+				currentIndex:0
 			}
 		},
 		props:{
@@ -58,97 +59,56 @@
 				}
 			}
 		},
-        created() {
-            this.touch = {}
-            this.probeType = 3
-            this.listenScroll = true
-            this.listHeight
-        },
+		created() {
+			this.touch ={}
+		},
 		computed: {
 			shortcutlist() {
-				return this.data.map(group=>{
-					return group.title.substr(0,1)
+				return this.data.map(item=>{
+					return item.title.substr(0,1)
 				})
 			}
 		},
-		components: {
+		components:{
 			Scroll
 		},
 		methods: {
 			onShortcutTouchStart(e) {
-				// console.log(e)
 				let anchorIndex = getData(e.target,'index')
 				this.touch.y1 = e.touches[0].pageY
-				this.touch.anchorIndex = anchorIndex
+				this.touch.anchorIndex = parseInt(anchorIndex)
 				this._scrollTo(anchorIndex)
 			},
 			onShortcutTouchStartMove(e) {
 				this.touch.y2 = e.touches[0].pageY
-
-				let delta = (this.touch.y2-this.touch.y1)/ ANCHOR_HEIGHT | 0
-				
-				let anchorIndex = parseInt(this.touch.anchorIndex) + delta
+				let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
+				let anchorIndex = this.touch.anchorIndex + delta
 				this._scrollTo(anchorIndex)
 
 			},
 			_scrollTo(index) {
-				// this.currentIndex = index
-				if (!index && index !== 0) {
+				if (!index && index !==0 ) {
 					return 
 				}
 				if (index<0) {
 					index = 0
-				}else if(index >this.listHeight.length-2){
-					index = this.listHeight.length-2
-
 				}
-				console.log(index,this.listHeight[index])
-				this.scrollY = - this.listHeight[index]
+				this.currentIndex = index
 				this.$refs.scroll.scrollToElement(this.$refs.group[index],0)
 			},
 			_calculateHeight() {
-				let listHeight = [],
-					Height = 0 ,
-					groupList = this.$refs.group ;
-				listHeight.push(Height)
-				for (let i =0;i<groupList.length;i++) {
-					let item = groupList[i]
-					Height += item.clientHeight
-					listHeight.push(Height)
-				}
-				console.log(listHeight)
-				this.listHeight = listHeight
-			},
-			scroll(pos) {
-				this.scrollY = pos.y
-
+				// 计算数据高度的区间
+				// 
 			},
 			selectSinger(item) {
 
 			}
 		},
-		watch: {
+		watch:{
 			data() {
 				setTimeout(()=>{
 					this._calculateHeight()
-				})	
-			},
-			scrollY(newY) {
-				let listHeight = this.listHeight
-				if (newY > 0) {
-					this.currentIndex = 0
-					return 
-				}
-
-				for (let i= 0 ;i<listHeight.length;i++) {
-
-					let height1 = listHeight[i]
-					let height2 =listHeight[i+1]
-					if (-newY>height1 && -newY<height2) {
-						this.currentIndex = i
-						return 
-					}
-				}
+				},25)
 			}
 		}
 	}

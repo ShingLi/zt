@@ -1,6 +1,9 @@
 <template>
 	<scroll class="listview"
 		:data = data
+		:probeType = probeType
+		:listenScroll= listenScroll
+		@scroll = 'scroll'
 		ref='scroll'
 	>
 		<ul>
@@ -21,7 +24,8 @@
 			</li>
 		</ul>
 		<div 
-			class="list-shortcut" 
+			class="list-shortcut"
+				v-if='shortcutlist.length' 
 				@touchstart.stop.prevent= 'onShortcutTouchStart($event)'
 				@touchmove.stop.prevent='onShortcutTouchStartMove($event)'
 			>
@@ -48,7 +52,8 @@
 	export default{
 		data(){
 			return {
-				currentIndex:0
+				currentIndex:0,
+				scrollY:-1
 			}
 		},
 		props:{
@@ -60,7 +65,11 @@
 			}
 		},
 		created() {
-			this.touch ={}
+			this.touch ={} 
+
+			this.listHeight = []
+			this.probeType = 3
+			this.listenScroll = true
 		},
 		computed: {
 			shortcutlist() {
@@ -98,7 +107,24 @@
 			},
 			_calculateHeight() {
 				// 计算数据高度的区间
-				// 
+				let listHeight = []
+				let height = 0
+				let group = this.$refs.group
+
+				listHeight.push(height)
+				for (let i=0;i<group.length;i++) {
+
+					let item = group[i]
+
+					height += item.clientHeight
+
+					listHeight.push(height)
+				}
+				this.listHeight = listHeight
+				
+			},
+			scroll(pos) {
+				this.scrollY = pos.y
 			},
 			selectSinger(item) {
 
@@ -109,6 +135,21 @@
 				setTimeout(()=>{
 					this._calculateHeight()
 				},25)
+			},
+			scrollY(newY) {
+				let listHeight = this.listHeight
+				let index 
+				if (newY>0) {
+					index = 0
+				}
+				for (let i=0;i<listHeight.length;i++) {
+					let height1 = listHeight[i]
+					let height2 = listHeight[i+1]
+					if (-newY>height1 && -newY<height2) {
+						this.currentIndex = i
+					}
+				}
+				
 			}
 		}
 	}

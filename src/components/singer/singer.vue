@@ -66,7 +66,7 @@
             			id: item.Fsinger_mid
           			}))
         		})
-        		console.log(map)
+        		// console.log(map)
         		// 为了得到有序列表需要处理map
         		let hot =[],
         			ret =[];
@@ -85,13 +85,14 @@
         		return hot.concat(ret)
         	},
             selectSinger(singer){
+               // console.log(singer)
                 this.$router.push(`/singer/${singer.id}`)
-                // 映射
                 this.setSinger(singer)
             },
             ...mapMutations({
-                setSinger:'SET_SINGER'
+                'setSinger':'SET_SINGER'
             })
+           
         }
     }
 </script>

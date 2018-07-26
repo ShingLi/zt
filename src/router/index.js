@@ -24,6 +24,10 @@ const routes =[
                 }
             ]
         },
+        // {
+        //     path:'/singerDetail/:id',
+        //     component:resolve=>require(['components/singer-detail/singer-detail'],resolve)
+        // },
         {
             path:'/rank',
             name:'rank',

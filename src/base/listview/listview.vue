@@ -38,9 +38,9 @@
 			</ul>
 		</div>
 		<!--diff -->
-		<!-- <div class="list-fixed" ref='fixed' v-show='fixedTitle'>
+		<div class="list-fixed" ref='fixed' v-show='fixedTitle'>
 			<h1 class="fixed-title">{{fixedTitle}}</h1>
-		</div> -->
+		</div>
 	</scroll>
 </template>
 <script>
@@ -53,7 +53,8 @@
 		data(){
 			return {
 				currentIndex:0,
-				scrollY:-1
+				scrollY:-1,
+				diff:-1
 			}
 		},
 		props:{
@@ -73,9 +74,15 @@
 		},
 		computed: {
 			shortcutlist() {
-				return this.data.map(item=>{
+				return this.data.map(item=>{	
 					return item.title.substr(0,1)
 				})
+			},
+			fixedTitle() {
+				if (this.scrollY>0) {
+					return ''
+				}
+				return (this.data.length)?(this.data[this.currentIndex].title):''
 			}
 		},
 		components:{
@@ -102,6 +109,9 @@
 				if (index<0) {
 					index = 0
 				}
+				if ( index>this.listHeight.length-2 ) {
+					index = this.listHeight.length-2
+				}
 				this.currentIndex = index
 				this.$refs.scroll.scrollToElement(this.$refs.group[index],0)
 			},
@@ -127,7 +137,8 @@
 				this.scrollY = pos.y
 			},
 			selectSinger(item) {
-
+				// console.log(item)
+				this.$emit('select',item)
 			}
 		},
 		watch:{
@@ -139,17 +150,26 @@
 			scrollY(newY) {
 				let listHeight = this.listHeight
 				let index 
-				if (newY>0) {
+				if (newY>=0) {
 					index = 0
 				}
 				for (let i=0;i<listHeight.length;i++) {
 					let height1 = listHeight[i]
 					let height2 = listHeight[i+1]
 					if (-newY>height1 && -newY<height2) {
-						this.currentIndex = i
+
+						index = i
+						this.diff = height2 + newY
 					}
 				}
 				
+				this.currentIndex = index
+				
+			},
+			diff(newY) {
+				// 根据
+				let offsetY = (newY>0 && newY<TITLE_HEIGHT)?(-TITLE_HEIGHT+newY):0
+				this.$refs.fixed.style.transform = `translate3d(0,${offsetY}px,0)`
 			}
 		}
 	}

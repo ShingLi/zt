@@ -15,14 +15,14 @@ const mutations = {
 	},
 
 	[types.SET_PLAYLIST](state,list) {
-		state.playList = payload
+		state.playList = list
 	},
 
-	[types.SET_SEQUENCELIST](state,list) {
-		state.sequenceList = payload
+	[types.SET_SEQUENCE_LIST](state,list) {
+		state.sequenceList = list
 	},
 
-	[types.SET_CURRENTINDEX](state,index) {
+	[types.SET_CURRENT_INDEX](state,index) {
 		state.currentIndex = num
 	},
 

@@ -17,9 +17,10 @@
 		<div class="bg-layer" ref='layer'></div>
 		<scroll :data='songs' class='list' ref='list' @scroll='scroll'
 			:listenScroll='listenScroll' :probeType='probeType'
+			
 		>
 			<div class="song-list-wrapper">
-				<song-list :songs='songs'></song-list>
+				<song-list :songs='songs' @select="selectItem"></song-list>
 			</div>
 		</scroll>
 	</div>
@@ -28,7 +29,7 @@
 	import scroll from 'base/scroll/scroll'
 	import SongList from 'base/song-list/song-list'
 	import { prefixStyle } from 'common/js/dom'
-
+	import { mapActions } from 'vuex'
 	const RESERVED_HEIGHT = 40
 	const transform = prefixStyle('transform')
 	export default {
@@ -68,7 +69,14 @@
 		methods:{
 			scroll(pos){
 				this.scrollY = pos.y
-			}
+			},
+			selectItem(item,index) {
+				
+				this.selectPlay(this.songs,index)
+			},
+			...mapActions([
+				'selectPlay'
+			])
 		},
 		computed:{
 			bgStyle(){

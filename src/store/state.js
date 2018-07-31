@@ -8,7 +8,7 @@ const state = {
     playList: [],
     sequenceList: [],
     currentIndex: -1,
-    mode:payMode.sequence
+    mode:payMode.sequence //顺序播放，循环播放，随机播放
 }
 
 export default state

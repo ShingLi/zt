@@ -1,23 +1,22 @@
 <template>
-	<div class="player" v-show="playList.length">
-		<div class="normal-player" v-show='fullScreen'>
+	<div class="player" v-show="playlist.length">
+		<div class="normal-player" v-show="fullScreen">
 			播放器
 		</div>
-		<div class="mini-player" v-show='!fullScreen'>
-			
-		</div>
+		<div class="mini-player" v-show="!fullScreen"></div>
 	</div>
+    
 </template>
 <script>
 	import { mapGetters } from 'vuex'
 	export default {
 		name:'player',
 		computed: {
-			...mapGetters([
-				'fullScreen',
-				'playList'
-			])
-		}
+            ...mapGetters([
+                'playlist',
+                'fullScreen'
+            ])
+        }
 	}
 </script>
 <style lang="less" scoped>

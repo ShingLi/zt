@@ -71,13 +71,15 @@
 				this.scrollY = pos.y
 			},
 			selectItem(item,index) {
-				
-				this.selectPlay(this.songs,index)
-			},
-			...mapActions([
-				'selectPlay'
-			])
-		},
+				this.selectPlay({
+                    list:this.songs,
+                    index
+                })
+            },
+            ...mapActions([
+                'selectPlay'
+            ])
+        },  
 		computed:{
 			bgStyle(){
 				return `background-image:url(${this.bgImage})`

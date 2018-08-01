@@ -1,45 +1,62 @@
 <template>
     <div class="player" v-show = "playList.length">
-        <div class="nomal-player" v-show="fullScreen">
-            <div class="background">
-                <img :src="currentSong.image" width="100%" height="100%">
-            </div>
-            <div class="top">
-                <div class="back" @click='minimum'>
-                    <i class="icon-back"></i>
-                </div>
-                <h1 class="title" v-text="currentSong.name"></h1>
-                <h2 class="name" v-text="currentSong.singer"></h2>
-            </div>
-            <div class="middle">
-                <div class="middle-l">
-                    <div class="cd-wrapper">
-                        <img :src="currentSong.image" class="image">
-                    </div>
-                </div>
-                <div class="middle-r"></div>
-            </div>
-            <div class="bottom">
-                <div class="icon i-left">
-                    <i class="icon-sequence"></i>
-                </div>
-                <div class="icon i-left">
-                    <i class="icon-prev"></i>
-                </div>
-                <div class="icon i-center">
-                    <i class="icon-pause"></i>
-                </div>
-                <div class="icon i-right">
-                    <i class="icon-next"></i>
-                </div>
-                <div class="icon i-right">
-                    <i class="icon-not-favorite"></i>
-                </div>
-            </div>
-        </div>
-        <div class="mini-player"  v-show="!fullScreen">
-            
-        </div>
+        <transition name='normal'>
+        	<div class="normal-player" v-show="fullScreen">
+	            <div class="background">
+	                <img :src="currentSong.image" width="100%" height="100%">
+	            </div>
+	            <div class="top">
+	                <div class="back" @click='minimum'>
+	                    <i class="icon-back"></i>
+	                </div>
+	                <h1 class="title" v-html="currentSong.name"></h1>
+	                <h2 class="name" v-text="currentSong.singer"></h2>
+	            </div>
+	            <div class="middle">
+	                <div class="middle-l">
+	                    <div class="cd-wrapper">
+	                        <img :src="currentSong.image" class="image">
+	                    </div>
+	                </div>
+	                <div class="middle-r"></div>
+	            </div>
+	            <div class="bottom">
+	                <div class="operators">
+	                	<div class="icon i-left">
+	                    	<i class="icon-sequence"></i>
+		                </div>
+		                <div class="icon i-left">
+		                    <i class="icon-prev"></i>
+		                </div>
+		                <div class="icon i-center">
+		                    <i class="icon-pause"></i>
+		                </div>
+		                <div class="icon i-right">
+		                    <i class="icon-next"></i>
+		                </div>
+		                <div class="icon i-right">
+		                    <i class="icon-not-favorite"></i>
+		                </div>
+	                </div>
+	            </div>
+        	</div>
+        </transition>
+        <transition name="mini">
+        	<div class="mini-player"  v-show="!fullScreen" @click='open'>
+	            <div class="icon">
+	            	<img :src="currentSong.image" width="40" height="40">
+	            </div>
+	            <div class="text">
+	            	<h2 class="name" v-html='currentSong.name'></h2>
+	            	<p class="singer" v-html='currentSong.singer'></p>
+	            </div>
+	            <div class="control"></div>
+	            <div class="control">
+	            	<i class="icon-playlist"></i>
+
+	            </div>
+        	</div>
+        </transition>
     </div>
 </template>
 <script>
@@ -55,10 +72,13 @@
         },
         methods: {
             minimum() {
-                this._minimum(false)
+                this.setFullScreen(false)
+            },
+            open() {
+            	this.setFullScreen(true)
             },
             ...mapMutations({
-                _minimum:'SET_FULLSCREEN'
+                setFullScreen:'SET_FULLSCREEN'
             })
         }
     }
@@ -67,7 +87,7 @@
     @import '~common/less/mixin.less';
     @import '~common/less/variable.less';
     .player{
-        .nomal-player{
+        .normal-player{
             position: fixed;
             top: 0;
             bottom: 0;
@@ -145,40 +165,77 @@
                 left: 0;
                 width: 100%;
                 bottom: 50px;
-                display: flex;
-                align-items: center;
-                .icon{
-                    flex: 1;
-                    color: @color-theme;   
-                    i{
-                        font-size: 30px;
-                    }
-                }
-                .i-left{
-                    text-align: right
-                }
-                .i-right{
-                    text-align: left
-                }
-                .i-center{
-                    padding: 0 20px;
-                    text-align: center;
-                    i{
-                        font-size: 40px;
-                    }
+                .operators{
+                	display: flex;
+                	align-items: center;
+                	.icon{
+	                    flex: 1;
+	                    color: @color-theme;   
+	                    i{
+	                        font-size: 30px;
+	                    }
+                	}
+	                .i-left{
+	                    text-align: right
+	                }
+	                .i-right{
+	                    text-align: left
+	                }
+	                .i-center{
+	                    padding: 0 20px;
+	                    text-align: center;
+	                    i{
+	                        font-size: 40px;
+	                    }
+	                }
                 }
                 
             }
+            
         }
         .mini-player{
             position: fixed;
+			display: flex;
+			-ms-align-items: center;
+			align-items: center;
             left: 0;
             bottom: 0;
             width: 100%;
             height: 60px;
             background: @color-highlight-background;
+			.icon{
+				flex: 0 0 40px;
+				width: 40px;
+				padding:0 10px 0 20px;
+				img{
+					border-radius: 50%;
+				}
+			}
+			.text{
+				flex: 1;
+				line-height: 20px;
+				overflow: hidden;
+				.name{
+					.no-wrap();
+					font-size: @font-size-medium
+				}
+				.singer{
+					.no-wrap();
+					font-size: @font-size-small
+				}
+			}
+			.control{
+				flex: 0 0 30px;
+				width: 30px;
+				padding:  0 10px;
+				.icon-playlist{
+					font-size: 30px;
+					color: @color-theme-d
+				}
+			}
         }
     }
+    
 </style>
 
 

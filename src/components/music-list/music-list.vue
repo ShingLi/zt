@@ -71,7 +71,7 @@
 				this.scrollY = pos.y
 			},
 			selectItem(item,index) {
-				this.selectPlay({
+                this.selectPlay({
                     list:this.songs,
                     index
                 })

@@ -234,8 +234,30 @@
 				}
 			}
         }
+        
     }
-    
+    // 动画部分
+    .normal-enter-active,.normal-leave-active{
+        transition:all .4s ;
+        .top,.bottom{
+            transition:all .4s cubic-bezier(0.86, 0.18, 0.82, 1.32)
+        }
+    }
+    .normal-enter,.normal-leave-to{
+        opacity: 0;
+        .top{
+            transform: translate3d(0,-100px,0)
+        }
+        .bottom{
+            transform: translate3d(0,100px,0)
+        }
+    }
+    .mini-enter-active,.mini-leave-active{
+        transition: all .4s
+    }
+    .mini-enter,.mini-leave-to{
+        opacity: 0;
+    }
 </style>
 
 

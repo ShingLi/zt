@@ -84,7 +84,28 @@
             	this.setFullScreen(true)
             },
             enter(el,done) {
-                
+                let { x, y, scale } = this._getPosAndScale()
+                const animation ={
+                    0:{
+                        transform:`translate3d(${x}px,${y}px,0) scale(${scale})`
+                    },
+                    60:{
+                        transform:`translate3d(0,0,0) scale(1.1)`
+                    },
+                    100:{
+                        transform:`translate3d(0,0,0) scale(1)`
+
+                    }
+                }
+                animations.registerAnimation({
+                    name:'move',
+                    animation,
+                    presets: {
+                        duration: 1000,
+                        easing: 'linear'
+                    }
+                })
+                animations.runAnimation(this.$refs.cdWrapper,'move',done)
             },
             afterEnter() {
 
@@ -102,15 +123,20 @@
                 const paddingBottom = 30
                 const paddingTop = 80
                 const width = window.innerWidth *.8
-                const x = window.innerWidth / 2 - paddingLeft
+                const x = -(window.innerWidth / 2 - paddingLeft)
                 const y = window.innerHeight - paddingTop - width - paddingBottom
-                
+                const scale = targetWidth / width
+                return {
+                    x,
+                    y,
+                    scale
+                }
             },
             ...mapMutations({
                 setFullScreen:'SET_FULLSCREEN'
             })
         }
-       
+
     }
 </script>
 <style lang='less' scoped>

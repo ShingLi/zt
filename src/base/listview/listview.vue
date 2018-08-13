@@ -15,6 +15,7 @@
 				<ul>
 					<li class="list-group-item" 
 						v-for='item in group.items'
+                        
 						@click='selectSinger(item)'
 					>
 						<img :src="item.avatar" alt="" class="avatar">
@@ -34,6 +35,7 @@
 					:data-index='index'
 					v-for='(item,index) of shortcutlist'
 					:class="{current:currentIndex == index}"
+                    :key='index'
 				>{{item}}</li>
 			</ul>
 		</div>

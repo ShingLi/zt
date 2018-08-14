@@ -34,7 +34,7 @@
 		                    <i class="icon-prev"></i>
 		                </div>
 		                <div class="icon i-center">
-		                    <i class="icon-pause"></i>
+		                    <i @click="togglePlaying" :class="playIcon"></i>
 		                </div>
 		                <div class="icon i-right">
 		                    <i class="icon-next"></i>
@@ -55,7 +55,9 @@
 	            	<h2 class="name" v-html='currentSong.name'></h2>
 	            	<p class="singer" v-html='currentSong.singer'></p>
 	            </div>
-	            <div class="control"></div>
+	            <div class="control">
+                    <i :class="playMini" @click.stop="togglePlaying"></i>
+                </div>
 	            <div class="control">
 	            	<i class="icon-playlist"></i>
 	            </div>
@@ -70,10 +72,17 @@
     export default {
         name:'player',
         computed: {
+            playIcon() {
+                return this.playing ?'icon-pause' :'icon-play'
+            },
+            playMini() {
+                return this.playing ?'icon-pause-mini' :'icon-play-mini'
+            },
             ...mapGetters([
                 'playList',
                 'fullScreen',
-                'currentSong'
+                'currentSong',
+                'playing'
             ])
         },
         methods: {
@@ -117,7 +126,7 @@
                 this.$refs.cdWrapper.addEventListener('transitionend',done)
             },
             afterLeave() {
-                this.$refs.cdWrapper.style.transition= ''
+                this.$refs.cdWrapper.style.transition = ''
                 this.$refs.cdWrapper.style.transform = ''
             },
             _getPosAndScale() {
@@ -136,9 +145,26 @@
                     scale
                 }
             },
+            togglePlaying() {
+                this.setPlaying(!this.playing)
+            },
             ...mapMutations({
-                setFullScreen:'SET_FULLSCREEN'
+                setFullScreen:'SET_FULLSCREEN',
+                setPlaying:'SET_PLAYING'
             })
+        },
+        watch: {
+            currentSong() {
+                this.$nextTick(() => {
+                    this.$refs.audio.play()
+                })
+            },
+            playing(newPalying) {
+                let audio = this.$refs.audio
+                this.$nextTick(() => {
+                    newPalying ?audio.play():audio.pause()
+                })
+            }
         }
 
     }
@@ -287,7 +313,11 @@
 			.control{
 				flex: 0 0 30px;
 				width: 30px;
-				padding:  0 10px;
+                padding:  0 10px;
+                .icon-play-mini,.icon-pause-mini{
+                    font-size: 30px;
+					color: @color-theme-d
+                }
 				.icon-playlist{
 					font-size: 30px;
 					color: @color-theme-d

@@ -101,20 +101,24 @@
                     name:'move',
                     animation,
                     presets: {
-                        duration: 1000,
+                        duration: 600,
                         easing: 'linear'
                     }
                 })
                 animations.runAnimation(this.$refs.cdWrapper,'move',done)
             },
             afterEnter() {
-
+                this.$refs.cdWrapper.style.animation = ''
             },
             leave(el,done) {
-
+                const {x, y, scale } = this._getPosAndScale()
+                this.$refs.cdWrapper.style.transition = 'all .6s'
+                this.$refs.cdWrapper.style.transform = `translate3d(${x}px,${y}px,0) scale(${scale})`
+                this.$refs.cdWrapper.addEventListener('transitionend',done)
             },
             afterLeave() {
-
+                this.$refs.cdWrapper.style.transition= ''
+                this.$refs.cdWrapper.style.transform = ''
             },
             _getPosAndScale() {
                 // 获取坐标的初始位置

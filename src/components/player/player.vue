@@ -20,7 +20,7 @@
 	            <div class="middle">
 	                <div class="middle-l">
 	                    <div class="cd-wrapper" ref="cdWrapper">
-	                        <img :src="currentSong.image" class="image">
+	                        <img :src="currentSong.image" class="image" :class="isRotate">
 	                    </div>
 	                </div>
 	                <div class="middle-r"></div>
@@ -49,7 +49,7 @@
         <transition name="mini">
         	<div class="mini-player"  v-show="!fullScreen" @click='open'>
 	            <div class="icon">
-	            	<img :src="currentSong.image" width="40" height="40">
+	            	<img :src="currentSong.image" width="40" height="40" :class="isRotate">
 	            </div>
 	            <div class="text">
 	            	<h2 class="name" v-html='currentSong.name'></h2>
@@ -77,6 +77,9 @@
             },
             playMini() {
                 return this.playing ?'icon-pause-mini' :'icon-play-mini'
+            },
+            isRotate() {
+                return this.playing ?'rotate' :'rotate pause'
             },
             ...mapGetters([
                 'playList',
@@ -243,6 +246,13 @@
                             border-radius: 50%;
 
                         }
+                        //旋转
+                        .rotate{
+                            animation: rotate 15s linear infinite;
+                        }
+                        .pause{
+                            animation-play-state: paused
+                        }
                     }
                 }
             }
@@ -295,7 +305,15 @@
 				padding:0 10px 0 20px;
 				img{
 					border-radius: 50%;
-				}
+                }
+                //旋转
+                .rotate{
+                     animation: rotate 10s linear infinite;
+                    
+                }
+                .pause{
+                    animation-play-state: paused
+                }
 			}
 			.text{
 				flex: 1;
@@ -347,6 +365,14 @@
     }
     .mini-enter,.mini-leave-to{
         opacity: 0;
+    }
+    @keyframes rotate {
+        form{
+            transform: rotate(0deg)
+        }
+        to{
+            transform: rotate(360deg)
+        }
     }
 </style>
 

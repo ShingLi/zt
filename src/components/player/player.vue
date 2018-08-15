@@ -30,14 +30,14 @@
 	                	<div class="icon i-left">
 	                    	<i class="icon-sequence"></i>
 		                </div>
-		                <div class="icon i-left">
-		                    <i class="icon-prev"></i>
+		                <div class="icon i-left" :class='disabledCls'>
+		                    <i class="icon-prev" @click="prev"></i>
 		                </div>
-		                <div class="icon i-center">
+		                <div class="icon i-center" :class='disabledCls'>
 		                    <i @click="togglePlaying" :class="playIcon"></i>
 		                </div>
 		                <div class="icon i-right">
-		                    <i class="icon-next"></i>
+		                    <i class="icon-next" @click="next" :class='disabledCls'></i>
 		                </div>
 		                <div class="icon i-right">
 		                    <i class="icon-not-favorite"></i>
@@ -63,7 +63,7 @@
 	            </div>
         	</div>
         </transition>
-        <audio :src="currentSong.url" ref='audio'></audio>
+        <audio :src="currentSong.url" ref='audio' @canplay="ready" @error="error"></audio>
     </div>
 </template>
 <script>
@@ -71,6 +71,11 @@
     import animations from 'create-keyframe-animation'
     export default {
         name:'player',
+        data() {
+            return {
+                songReady: false
+            }
+        },
         computed: {
             playIcon() {
                 return this.playing ?'icon-pause' :'icon-play'
@@ -81,11 +86,15 @@
             isRotate() {
                 return this.playing ?'rotate' :'rotate pause'
             },
+            disabledCls() {
+                return this.songReady ? "":'disable'
+            },
             ...mapGetters([
                 'playList',
                 'fullScreen',
                 'currentSong',
-                'playing'
+                'playing',
+                'currentIndex'
             ])
         },
         methods: {
@@ -151,9 +160,42 @@
             togglePlaying() {
                 this.setPlaying(!this.playing)
             },
+            ready() {
+                this.songReady = true
+            },
+            error() {
+                // 网络错误
+                this.songReady = true
+            },
+            prev() {
+                if (!this.songReady) return
+                if(!this.playing) {
+                    this.togglePlaying()
+                }
+                let index = this.currentIndex -1
+                if(index =='-1') {
+                    index = this.playList.length -1
+                }
+                this.songReady = false
+                this.setCurrentIndex(index)
+
+            },
+            next() {
+                if (!this.songReady) return
+                if(!this.playing) {
+                    this.togglePlaying()
+                }
+                let index = this.currentIndex +1
+                if( index == this.playList.length ) {
+                    index = 0
+                }
+                this.songReady = false
+                this.setCurrentIndex(index)
+            },
             ...mapMutations({
                 setFullScreen:'SET_FULLSCREEN',
-                setPlaying:'SET_PLAYING'
+                setPlaying:'SET_PLAYING',
+                setCurrentIndex:'SET_CURRENTINDEX'
             })
         },
         watch: {
@@ -309,7 +351,7 @@
                 //旋转
                 .rotate{
                      animation: rotate 10s linear infinite;
-                    
+
                 }
                 .pause{
                     animation-play-state: paused

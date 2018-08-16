@@ -34,9 +34,11 @@
 	            <div class="bottom">
                     <!-- progress -->
                     <div class="progress-wrapper">
-                        <span class="time">{{format(this.currentTime)}}</span>
-                        <div class="progress-bar-wrapper"></div>
-                        <span class="time">4.30</span>
+                        <span class="time time-l">{{format(currentTime)}}</span>
+                        <div class="progress-bar-wrapper">
+                            <progress-bar></progress-bar>
+                        </div>
+                        <span class="time time-r">{{format(currentSong.duration)}}</span>
                     </div>
                     <!--featuers -->
 	                <div class="operators">
@@ -88,6 +90,7 @@
 <script>
     import { mapGetters , mapMutations , mapActions } from 'vuex'
     import animations from 'create-keyframe-animation'
+    import ProgressBar from 'base/progress-bar/progress-bar'
     export default {
         name:'player',
         data() {
@@ -116,6 +119,9 @@
                 'playing',
                 'currentIndex'
             ])
+        },
+        components: {
+            ProgressBar
         },
         methods: {
             minimum() {
@@ -188,8 +194,9 @@
                 this.songReady = true
             },
             timeUpdate(e) {
-               
+                console.log(e)
                 this.currentTime = e.target.currentTime
+                
                 // this.format(this.currentTime)
             },
             // 格式化时间
@@ -201,10 +208,10 @@
                 return `${minute}:${secode}`
             },
             _pad(num, n=2) {
-                // 补全
-                let len = num.toString().length
-                while(len< n) {
-                    num  = '0'+num
+                // 零位补全
+                let len = num.toString().length 
+                while (len < n ) {
+                    num = `0${num}`
                     len ++
                 }
                 return num
@@ -220,7 +227,6 @@
                 }
                 this.songReady = false
                 this.setCurrentIndex(index)
-
             },
             next() {
                 if (!this.songReady) return

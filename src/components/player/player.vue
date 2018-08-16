@@ -22,10 +22,23 @@
 	                    <div class="cd-wrapper" ref="cdWrapper">
 	                        <img :src="currentSong.image" class="image" :class="isRotate">
 	                    </div>
+                        <!-- 时间进度条 -->
+                        <div class="playing-lyric-wrapper">
+                            <div class="playing-lyric"></div>
+                        </div>
 	                </div>
-	                <div class="middle-r"></div>
+	                <div class="middle-r">
+                        <!-- 右边歌词部分 -->
+                    </div>
 	            </div>
 	            <div class="bottom">
+                    <!-- progress -->
+                    <div class="progress-wrapper">
+                        <span class="time">{{format(this.currentTime)}}</span>
+                        <div class="progress-bar-wrapper"></div>
+                        <span class="time">4.30</span>
+                    </div>
+                    <!--featuers -->
 	                <div class="operators">
 	                	<div class="icon i-left">
 	                    	<i class="icon-sequence"></i>
@@ -63,7 +76,13 @@
 	            </div>
         	</div>
         </transition>
-        <audio :src="currentSong.url" ref='audio' @canplay="ready" @error="error"></audio>
+        <audio :src="currentSong.url" 
+            ref='audio' 
+            @canplay="ready" 
+            @error="error"
+            @timeupdate = 'timeUpdate($event)'
+                        
+        ></audio>
     </div>
 </template>
 <script>
@@ -73,7 +92,8 @@
         name:'player',
         data() {
             return {
-                songReady: false
+                songReady: false,
+                currentTime:0
             }
         },
         computed: {
@@ -167,13 +187,35 @@
                 // 网络错误
                 this.songReady = true
             },
+            timeUpdate(e) {
+               
+                this.currentTime = e.target.currentTime
+                // this.format(this.currentTime)
+            },
+            // 格式化时间
+            format(interval) {
+                interval = interval | 0
+                let minute = interval / 60 | 0
+                let secode = this._pad(interval % 60)
+               
+                return `${minute}:${secode}`
+            },
+            _pad(num, n=2) {
+                // 补全
+                let len = num.toString().length
+                while(len< n) {
+                    num  = '0'+num
+                    len ++
+                }
+                return num
+            },
             prev() {
                 if (!this.songReady) return
                 if(!this.playing) {
                     this.togglePlaying()
                 }
                 let index = this.currentIndex -1
-                if(index =='-1') {
+                if(index == -1) {
                     index = this.playList.length -1
                 }
                 this.songReady = false
@@ -303,6 +345,29 @@
                 left: 0;
                 width: 100%;
                 bottom: 50px;
+                .progress-wrapper{
+                    display: flex;
+                    align-items: center;
+                    width: 80%;
+                    margin: 0 auto;
+                    padding: 10px 0;
+                    .time{
+                        flex: 0 0 30px;
+                        width: 30px;
+                        line-height: 30px;
+                        font-size: @font-size-small;
+                        color:@color-text;
+                        &.time-l{
+                            text-align: left
+                        }
+                        &.time-r{
+                            text-align: right
+                        }
+                    }
+                    .progress-bar-wrapper{
+                        flex: 1;
+                    }
+                }
                 .operators{
                 	display: flex;
                 	align-items: center;
@@ -417,5 +482,3 @@
         }
     }
 </style>
-
-

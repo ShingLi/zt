@@ -17,9 +17,9 @@
         },
         watch: {
             percent (newPercent) {
-                setTimeout(() => {
-                    this.refs.progress.style.width = `${newPercent}%`
-                }, 50);
+               this.$refs.progress.style.width = `${newPercent}%`
+               this.$refs.progress.style.height = `100%`
+
             }
         }
     }
@@ -34,7 +34,7 @@
             top:13px;
             background: rgba(0,0,0,.3);
             .progress{
-                // height: 100%;
+
                 background: @color-theme;
             }
             .progress-btn-wrapper{

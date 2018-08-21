@@ -36,12 +36,13 @@
                     <div class="progress-wrapper">
                         <span class="time time-l">{{format(currentTime)}}</span>
                         <div class="progress-bar-wrapper">
-                            <progress-bar></progress-bar>
+                            <progress-bar :percent="percent"></progress-bar>
                         </div>
                         <span class="time time-r">{{format(currentSong.duration)}}</span>
                     </div>
                     <!--featuers -->
 	                <div class="operators">
+                        <!-- 顺序播放 -->
 	                	<div class="icon i-left">
 	                    	<i class="icon-sequence"></i>
 		                </div>
@@ -78,12 +79,12 @@
 	            </div>
         	</div>
         </transition>
-        <audio :src="currentSong.url" 
-            ref='audio' 
-            @canplay="ready" 
+        <audio :src="currentSong.url"
+            ref='audio'
+            @canplay="ready"
             @error="error"
             @timeupdate = 'timeUpdate($event)'
-                        
+
         ></audio>
     </div>
 </template>
@@ -96,7 +97,8 @@
         data() {
             return {
                 songReady: false,
-                currentTime:0
+                currentTime:0,
+                percent:0
             }
         },
         computed: {
@@ -194,9 +196,9 @@
                 this.songReady = true
             },
             timeUpdate(e) {
-                console.log(e)
+                // console.log(e)
                 this.currentTime = e.target.currentTime
-                
+
                 // this.format(this.currentTime)
             },
             // 格式化时间
@@ -204,12 +206,12 @@
                 interval = interval | 0
                 let minute = interval / 60 | 0
                 let secode = this._pad(interval % 60)
-               
+
                 return `${minute}:${secode}`
             },
             _pad(num, n=2) {
                 // 零位补全
-                let len = num.toString().length 
+                let len = num.toString().length
                 while (len < n ) {
                     num = `0${num}`
                     len ++
@@ -257,6 +259,11 @@
                 this.$nextTick(() => {
                     newPalying ?audio.play():audio.pause()
                 })
+            },
+            // 百分比的计算
+            currentTime(newTime) {
+                let percent = newTime / this.currentSong.duration
+                this.percent = percent.toFixed(2) * 100
             }
         }
 
@@ -338,7 +345,7 @@
                         }
                         //旋转
                         .rotate{
-                            animation: rotate 15s linear infinite;
+                            animation: rotate 20s linear infinite;
                         }
                         .pause{
                             animation-play-state: paused

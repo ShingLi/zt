@@ -1,9 +1,7 @@
 <template>
     <div class="progress-bar">
         <div class="bar-inner">
-            <div class="progress">
-
-            </div>
+            <div class="progress" ref='progress'></div>
             <div class="progress-btn-wrapper">
                 <div class="progress-btn"></div>
             </div>
@@ -12,7 +10,18 @@
 </template>
 <script>
     export default {
-        name:'progress-bar'
+        name: 'progress-bar',
+        props: {
+            percent: Number,
+            default: 0
+        },
+        watch: {
+            percent (newPercent) {
+                setTimeout(() => {
+                    this.refs.progress.style.width = `${newPercent}%`
+                }, 50);
+            }
+        }
     }
 </script>
 <style lang="less" scoped>
@@ -24,6 +33,10 @@
             height: 4px;
             top:13px;
             background: rgba(0,0,0,.3);
+            .progress{
+                // height: 100%;
+                background: @color-theme;
+            }
             .progress-btn-wrapper{
                 position: absolute;
                 width: 30px;

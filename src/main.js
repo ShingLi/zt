@@ -7,7 +7,7 @@ import router from './router'
 import store from './store'
 // 引入首页是index.styl
 import 'common/less/index.less'
-
+// import 'common/js/vConsole'
 
 Vue.config.productionTip = false
 

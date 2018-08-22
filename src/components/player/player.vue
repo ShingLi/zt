@@ -36,7 +36,7 @@
                     <div class="progress-wrapper">
                         <span class="time time-l">{{format(currentTime)}}</span>
                         <div class="progress-bar-wrapper">
-                            <progress-bar :percent="percent"></progress-bar>
+                            <progress-bar :percent=" percent"></progress-bar>
                         </div>
                         <span class="time time-r">{{format(currentSong.duration)}}</span>
                     </div>
@@ -97,8 +97,7 @@
         data() {
             return {
                 songReady: false,
-                currentTime:0,
-                percent:0
+                currentTime: 0
             }
         },
         computed: {
@@ -113,6 +112,10 @@
             },
             disabledCls() {
                 return this.songReady ? "":'disable'
+            },
+            percent() {
+
+                return this.currentTime / this.currentSong.duration
             },
             ...mapGetters([
                 'playList',
@@ -259,11 +262,6 @@
                 this.$nextTick(() => {
                     newPalying ?audio.play():audio.pause()
                 })
-            },
-            // 百分比的计算
-            currentTime(newTime) {
-                let percent = newTime / this.currentSong.duration
-                this.percent = percent.toFixed(2) * 100
             }
         }
 

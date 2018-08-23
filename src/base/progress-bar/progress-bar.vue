@@ -7,7 +7,7 @@
                     ref='progressBtn'
                     @touchstart= 'progressTouchStart($event)'
                     @touchmove = 'progressTouchMove($event)'
-                    @touchend  = 'progress.TouchEnd($event)'
+                    @touchend  = 'progressTouchEnd($event)'
                 ></div>
             </div>
         </div>
@@ -29,7 +29,20 @@
             this.touch = {}
         },
         methods:{
+            progressTouchStart(e) {
+                console.log(e)
+                this.touch.inited = true
+                this.touch.startX = e.touches[0].pageX
+                this.touch.left = this.$refs.progress.clientWidth
 
+            },
+            progressTouchMove(e) {
+                const deltaX = e.touches[0].pageX - this.touch.startX
+
+            },
+            progressTouchEnd(e) {
+
+            }
         },
         watch: {
             percent (newPercent) {

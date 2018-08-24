@@ -1,6 +1,6 @@
 <template>
     <div class="progress-bar">
-        <div class="bar-inner" ref='progressBar'>
+        <div class="bar-inner" ref='progressBar' @click = progressClick($event)>
             <div class="progress" ref='progress'></div>
             <div class="progress-btn-wrapper">
                 <div class="progress-btn"
@@ -30,27 +30,40 @@
         },
         methods:{
             progressTouchStart(e) {
-                console.log(e)
                 this.touch.inited = true
                 this.touch.startX = e.touches[0].pageX
                 this.touch.left = this.$refs.progress.clientWidth
-
             },
             progressTouchMove(e) {
+                if(!this.touch.inited) return
                 const deltaX = e.touches[0].pageX - this.touch.startX
-
+                let offSetWidth = Math.min(Math.max(0,this.touch.left + deltaX),this.$refs.progressBar.clientWidth - width)
+                this._offSet(offSetWidth)
             },
-            progressTouchEnd(e) {
-
+            progressTouchEnd() {
+                this.touch.inited = false
+                this._triggerPercent()
+            },
+            _triggerPercent() {
+                let percent = this.$refs.progress.clientWidth / (this.$refs.progressBar.clientWidth - width)
+                this.$emit('changecurrenttime', percent)
+            },
+            // 共同的偏移函数
+            _offSet(offSet) {
+                this.$refs.progress.style.width = `${offSet}px`
+                this.$refs.progressBtn.style[transform] = `translate3d(${offSet}px,0,0)`
+            },
+            progressClick(e) {
+                this._offSet(e.offsetX)
+                this._triggerPercent()
             }
         },
         watch: {
             percent (newPercent) {
-                if (newPercent >0) {
-                    const barWidth = this.$refs.progressBar.clientWidth -16
+                if (newPercent >=0 && !this.touch.inited) {
+                    const barWidth = this.$refs.progressBar.clientWidth -width
                     let offSet = newPercent * barWidth
-                    this.$refs.progress.style.width = `${offSet}px`
-                    this.$refs.progressBtn.style[transform] = `translate3d(${offSet}px,0,0)`
+                    this._offSet(offSet)
                 }
             }
         }

@@ -72,7 +72,9 @@
 	            	<p class="singer" v-html='currentSong.singer'></p>
 	            </div>
 	            <div class="control">
-                    <i :class="playMini" @click.stop="togglePlaying"></i>
+                    <progress-circle :radius='32' :percent='percent'>
+                        <i :class="playMini" @click.stop="togglePlaying" class="miniplay"></i>
+                    </progress-circle>
                 </div>
 	            <div class="control">
 	            	<i class="icon-playlist"></i>
@@ -92,6 +94,7 @@
     import { mapGetters , mapMutations , mapActions } from 'vuex'
     import animations from 'create-keyframe-animation'
     import ProgressBar from 'base/progress-bar/progress-bar'
+    import ProgressCircle from 'base/progress-circle/progress-circle'
     export default {
         name:'player',
         data() {
@@ -126,7 +129,8 @@
             ])
         },
         components: {
-            ProgressBar
+            ProgressBar,
+            ProgressCircle
         },
         methods: {
             minimum() {
@@ -463,7 +467,13 @@
 				.icon-playlist{
 					font-size: 30px;
 					color: @color-theme-d
-				}
+                }
+                .miniplay{
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    font-size: 32px;
+                }
 			}
         }
 

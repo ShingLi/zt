@@ -3,7 +3,7 @@
 > 2021/01/17
 
 + Lerna中文翻译
-  + https://segmentfault.com/a/1190000023954051
+  + <https://segmentfault.com/a/1190000023954051>
 
 >2021/01/20
 
@@ -29,3 +29,10 @@
       "cwd": "${workspaceRoot}/Nuxtjs/nuxt.js"
   }
   ```
+
+>2021/01/23
+
++ `require()`
+  + <https://segmentfault.com/a/1190000009060866>
+    + 解释了`require`加载一个模块的过程
+    + `require`默认加载的是一个对象即`module.exports || exports`

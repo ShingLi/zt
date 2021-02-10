@@ -36,3 +36,10 @@
   + <https://segmentfault.com/a/1190000009060866>
     + 解释了`require`加载一个模块的过程
     + `require`默认加载的是一个对象即`module.exports || exports`
+
+> 2021/02/10
+
++ `miniminst`
+  + [github](https://www.npmjs.com/package/minimist)
+  + [中文解析](https://jarvys.github.io/2014/06/01/minimist-js/)
+    + 一个`Node`命令行参数解析库

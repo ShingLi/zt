@@ -49,3 +49,13 @@
 + `defu`
   + [一个Object.assign的解决方案](https://www.lodashjs.com/docs/lodash.defaultsDeep)
   + `defu`也是一个`Object.assign`解决方案
+
++ `create-require`
+  + `Nodejs``module`模块中`createRequire`的Polyfill [module.createRequire(filename)](http://nodejs.cn/api/module.html#module_module_createrequire_filename)
+  
+  ```js
+    <!-- esm 开启不然 node是Commonjs 规范 使用Esm模块语法报错 -->
+    import { createRequire } from 'module'
+    import path from 'path’
+    const modules = createRequire(path.resolve(process.cwd(), 'a.js')) // 根目录下面有一个a.js
+  ```

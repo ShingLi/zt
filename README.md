@@ -43,3 +43,8 @@
   + [github](https://www.npmjs.com/package/minimist)
   + [中文解析](https://jarvys.github.io/2014/06/01/minimist-js/)
     + 一个`Node`命令行参数解析库
+
+>2021/02/12
+
++ `defu`
+  + [一个Object.assign的解决方案](https://www.lodashjs.com/docs/lodash.defaultsDeep)

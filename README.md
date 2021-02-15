@@ -48,3 +48,4 @@
 
 + `defu`
   + [一个Object.assign的解决方案](https://www.lodashjs.com/docs/lodash.defaultsDeep)
+  + `defu`也是一个`Object.assign`解决方案

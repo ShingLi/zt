@@ -53,11 +53,17 @@
 > 2012/02/15
 
 + `create-require`
-  + `Nodejs`module`模块中`createRequire`的Polyfill [module.createRequire(filename)](http://nodejs.cn/api/module.html#module_module_createrequire_filename)
+  + `Nodejs`module`模块中`createRequire`的Polyfill [create-require(filename)](https://www.npmjs.com/package/create-require)
   
   ```js
     <!-- esm 开启不然 node是Commonjs 规范 使用Esm模块语法报错 -->
+    // node 12.2版本以上
     import { createRequire } from 'module'
+    import path from 'path’
+    const modules = createRequire(path.resolve(process.cwd(), 'a.js')) // 根目录下面有一个a.js
+    
+    // <= v12.2.0
+    const createRequire = require('create-require')
     import path from 'path’
     const modules = createRequire(path.resolve(process.cwd(), 'a.js')) // 根目录下面有一个a.js
   ```

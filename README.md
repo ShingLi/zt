@@ -50,7 +50,7 @@
   + [一个Object.assign的解决方案](https://www.lodashjs.com/docs/lodash.defaultsDeep)
   + `defu`也是一个`Object.assign`解决方案
 
-> 2012/02/15
+> 2021/02/15
 
 + `create-require`
   + `Nodejs`module`模块中`createRequire`的Polyfill [create-require(filename)](https://www.npmjs.com/package/create-require)
@@ -67,3 +67,8 @@
     import path from 'path’
     const modules = createRequire(path.resolve(process.cwd(), 'a.js')) // 根目录下面有一个a.js
   ```
+
+> 2021/03/06
+
++ `fs-extra`
+  + [掘金介绍](https://juejin.cn/post/6844903641594216455)

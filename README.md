@@ -72,3 +72,9 @@
 
 + `fs-extra`
   + [掘金介绍](https://juejin.cn/post/6844903641594216455)
+
+> 2021/03/20
+
++ `nodemon`
+  + 一个自动重启`node`服务的npm包
+  + [掘金中文文档翻译](https://juejin.cn/post/6844904191316459527)

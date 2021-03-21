@@ -78,3 +78,7 @@
 + `nodemon`
   + 一个自动重启`node`服务的npm包
   + [掘金中文文档翻译](https://juejin.cn/post/6844904191316459527)
+
++ `inquirer`
+  + [使用简介](https://blog.csdn.net/qq_26733915/article/details/80461257)
+    + 目前有一个Bug,就是无法使用箭头选中，window 上可以，mac不行，[具体issure](https://github.com/SBoudrias/Inquirer.js/issues/970)

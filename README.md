@@ -4,6 +4,12 @@
 
 + Lerna中文翻译
   + <https://segmentfault.com/a/1190000023954051>
+  
+  ```js
+    lerna add 会给所有依赖包安装依赖
+    yarn add vue -W 会单独将依赖装到root目录
+    yarn workspace web add vue 给web 安装依赖
+  ```
 
 >2021/01/20
 
